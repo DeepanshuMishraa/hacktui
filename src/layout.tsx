@@ -37,5 +37,5 @@ export const RootLayout = () => {
   );
 };
 
-const renderer = await createCliRenderer();
+export const renderer = await createCliRenderer();
 createRoot(renderer).render(<RootLayout />);

@@ -8,6 +8,7 @@ import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
 import { useTheme } from "./theme";
 import { exit } from "process";
+import { renderer } from "./layout";
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
@@ -32,7 +33,7 @@ export default function App() {
     }
 
     if (key.name === "q") {
-      exit(0);
+      renderer.destroy();
     }
     if (key.name === "t") {
       setScreen(Screens.TOP_STORIES);
