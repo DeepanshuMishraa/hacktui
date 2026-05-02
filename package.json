@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run --watch src/index.tsx"
+    "dev": "bun run --watch src/layout.tsx"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -15,6 +15,7 @@
   "dependencies": {
     "@opentui/core": "^0.1.103",
     "@opentui/react": "^0.1.103",
+    "opentui-spinner": "^0.0.6",
     "react": "^19.2.4"
   }
 }
