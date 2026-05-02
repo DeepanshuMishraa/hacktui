@@ -7,8 +7,26 @@ import TopStories from "./top-stories";
 import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
 import { useTheme } from "./theme";
-import { exit } from "process";
 import { renderer } from "./layout";
+
+function MenuItem({
+  keyLabel,
+  label,
+  tokens,
+}: {
+  keyLabel: string;
+  label: string;
+  tokens: ReturnType<typeof useTheme>["tokens"];
+}) {
+  return (
+    <box style={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
+      <text fg={tokens.accent}>
+        <strong>{keyLabel}</strong>
+      </text>
+      <text fg={tokens.textSecondary}>{label}</text>
+    </box>
+  );
+}
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
@@ -64,40 +82,31 @@ export default function App() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "90%",
-        gap: 0.5,
+        minHeight: "100%",
+        gap: 0,
       }}
     >
       <ascii-font
         font="tiny"
         text="HackTUI"
         color={tokens.accent}
-        marginTop={1.5}
+        marginBottom={1}
       />
-      <text fg={tokens.textSecondary} marginTop={1}>
-        Your HackerNews Inside the Terminal
+
+      <text fg={tokens.textSecondary} marginBottom={3}>
+        HackerNews in your terminal
       </text>
-      <box style={{ flexDirection: "row", gap: 1 }}>
-        <box paddingX={1} backgroundColor={tokens.accent}>
-          <text>
-            <strong>F (Feed)</strong>
-          </text>
-        </box>
 
-        <box paddingX={1} backgroundColor={tokens.accent}>
-          <text>
-            <strong>S (Search)</strong>
-          </text>
-        </box>
-
-        <box paddingX={1} backgroundColor={tokens.accent}>
-          <text>
-            <strong>T (Top Stories)</strong>
-          </text>
-        </box>
+      <box style={{ flexDirection: "column", gap: 1, marginBottom: 3 }}>
+        <MenuItem keyLabel="f" label="feed" tokens={tokens} />
+        <MenuItem keyLabel="t" label="top stories" tokens={tokens} />
+        <MenuItem keyLabel="s" label="search" tokens={tokens} />
       </box>
-      <box marginTop={1}>
-        <text fg={tokens.textSecondary}>Toggle theme: ctrl + t</text>
+
+      <box style={{ flexDirection: "column", gap: 0, alignItems: "center" }}>
+        <text fg={tokens.textSecondary}>
+          ctrl+t theme · q quit
+        </text>
       </box>
     </box>
   );
