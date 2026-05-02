@@ -4,9 +4,12 @@ import Feed from "./feed";
 import "opentui-spinner/react";
 import { Screens } from "./types";
 import TopStories from "./top-stories";
+import { useDialog } from "@opentui-ui/dialog/react";
+import Search from "./search";
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
+  const dialog = useDialog();
 
   useKeyboard((key) => {
     if (key.name === "f") {
@@ -17,6 +20,14 @@ export default function App() {
     }
     if (key.name === "escape") {
       setScreen(Screens.HOME);
+    }
+    if (key.name === "s") {
+      dialog.show({
+        content: () => <Search />,
+        onClose: () => setScreen(Screens.HOME),
+        closeOnEscape: true,
+        id: "search-dialog",
+      });
     }
   });
 
