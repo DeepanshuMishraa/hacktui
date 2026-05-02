@@ -1,4 +1,4 @@
-export default function Feed({ username }: { username: string }) {
+export default function Feed() {
   return (
     <box
       style={{
@@ -11,7 +11,7 @@ export default function Feed({ username }: { username: string }) {
     >
       <ascii-font font="tiny" text="HackTUI" color="#FF653F" marginTop={1.5} />
       <text fg="#FF653F">
-        <strong>Welcome, {username}!</strong>
+        <strong>Welcome!</strong>
       </text>
       <text fg="#666666">Feed coming soon...</text>
     </box>
