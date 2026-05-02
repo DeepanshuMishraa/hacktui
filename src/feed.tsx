@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useKeyboard } from "@opentui/react";
 import { openUrl } from "./utils/open-url";
 import { useTheme } from "./theme";
+import FeedDetail from "./feed-detail";
 
 function getDomain(url?: string): string {
   if (!url) return "news.ycombinator.com";
@@ -29,9 +30,14 @@ function timeAgo(timestamp: number): string {
   return `${seconds}s ago`;
 }
 
-export default function Feed() {
+interface FeedProps {
+  onDetailChange?: (isOpen: boolean) => void;
+}
+
+export default function Feed({ onDetailChange }: FeedProps) {
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(1);
+  const [detailStory, setDetailStory] = useState<HNItem | null>(null);
   const scrollboxRef = useRef<any>(null);
   const { tokens } = useTheme();
 
@@ -74,7 +80,12 @@ export default function Feed() {
   const isError = idsError || storiesError;
   const totalPages = allStoryIds ? Math.ceil(allStoryIds.length / 30) : 1;
 
+  useEffect(() => {
+    onDetailChange?.(detailStory !== null);
+  }, [detailStory, onDetailChange]);
+
   useKeyboard((key) => {
+    if (detailStory) return;
     if (!stories) return;
     if (key.name === "down") {
       setSelected((s) => Math.min(s + 1, stories.length - 1));
@@ -96,10 +107,13 @@ export default function Feed() {
     }
     if (key.name === "enter" || key.name === "return") {
       if (stories[selected]) {
+        setDetailStory(stories[selected]);
+      }
+    }
+    if (key.name === "o") {
+      if (stories[selected]) {
         const story = stories[selected];
-        openUrl(
-          story.url ?? `https://news.ycombinator.com/item?id=${story.id}`,
-        );
+        openUrl(story.url ?? `https://news.ycombinator.com/item?id=${story.id}`);
       }
     }
   });
@@ -109,6 +123,10 @@ export default function Feed() {
       scrollboxRef.current.scrollChildIntoView(`story-${stories[selected].id}`);
     }
   }, [selected, stories]);
+
+  if (detailStory) {
+    return <FeedDetail story={detailStory} onBack={() => setDetailStory(null)} />;
+  }
 
   if (isLoading) {
     return (
@@ -271,7 +289,10 @@ export default function Feed() {
           <strong>Paginate</strong> ← → ({page}/{totalPages})
         </text>
         <text fg={tokens.textSecondary}>
-          <strong>Open</strong> enter
+          <strong>Open</strong> o
+        </text>
+        <text fg={tokens.textSecondary}>
+          <strong>Detail</strong> enter
         </text>
         <text fg={tokens.textSecondary}>
           <strong>Back</strong> esc

@@ -30,11 +30,13 @@ function MenuItem({
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
+  const [detailOpen, setDetailOpen] = useState(false);
   const dialog = useDialog();
   const isOpen = useDialogState((s) => s.isOpen);
   const { tokens, toggle } = useTheme();
 
   useKeyboard((key) => {
+    if (detailOpen) return;
     if (key.ctrl) {
       if (key.name === "t") {
         toggle();
@@ -70,10 +72,10 @@ export default function App() {
   });
 
   if (screen === Screens.FEED) {
-    return <Feed />;
+    return <Feed onDetailChange={setDetailOpen} />;
   }
   if (screen === Screens.TOP_STORIES) {
-    return <TopStories />;
+    return <TopStories onDetailChange={setDetailOpen} />;
   }
 
   return (

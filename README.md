@@ -29,11 +29,12 @@ bunx hacktui
 |-----|--------|
 | `↑` `↓` | Navigate stories |
 | `←` `→` | Previous / next page |
-| `Enter` | Open story in browser |
+| `Enter` | View story detail |
+| `o` | Open story in browser |
 | `f` | Go to Feed |
 | `t` | Go to Top Stories |
 | `s` | Search |
-| `Esc` | Back to home |
+| `Esc` | Back |
 | `Ctrl + t` | Toggle dark/light theme |
 | `q` | Quit |
 
@@ -41,7 +42,7 @@ Pagination works like the real HN — 30 stories per page, numbered continuously
 
 ## Why
 
-I got tired of context-switching to a browser just to check HN. This stays in the terminal where I already am. Stories open in your default browser when you hit Enter, so you only leave the terminal when you actually want to read something.
+I got tired of context-switching to a browser just to check HN. This stays in the terminal where I already am. Press Enter to read story details and comments inline, or press `o` to open in your browser when you actually want to leave the terminal.
 
 ## License
 
