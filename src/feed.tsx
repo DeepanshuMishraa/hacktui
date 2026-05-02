@@ -94,7 +94,7 @@ export default function Feed() {
           gap: 1,
         }}
       >
-        <spinner name="bouncingBall" color="#FF653F" />
+        <spinner name="dots" color="#FF653F" />
         <text fg="#666666">Loading stories...</text>
       </box>
     );
