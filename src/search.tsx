@@ -1,41 +1,139 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useKeyboard } from "@opentui/react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import "opentui-spinner/react";
+import { openUrl } from "./utils/open-url";
+import { fileStorage } from "./utils/cache";
 
-const DUMMY_RESULTS = [
-  {
-    title: "Show HN: I built a TUI framework in Zig",
-    author: "anomaly",
-    points: 234,
-  },
-  { title: "The future of AI-powered development", author: "dhh", points: 189 },
-  { title: "Why I switched from Rust to Zig", author: "andrewrk", points: 456 },
-  { title: "Understanding Linux namespaces", author: "lwn", points: 312 },
-  {
-    title: "Docker is dead, long live containers",
-    author: "solomon",
-    points: 567,
-  },
-  {
-    title: "Building a database from scratch in Go",
-    author: "cockroach",
-    points: 278,
-  },
-];
+const searchApi = axios.create({
+  baseURL: "https://hn.algolia.com/api/v1",
+  timeout: 25000,
+});
+
+interface SearchHit {
+  objectID: string;
+  title: string;
+  url?: string;
+  author: string;
+  points: number;
+  created_at_i: number;
+  num_comments?: number;
+}
+
+interface SearchHistoryEntry {
+  query: string;
+  results: SearchHit[];
+  timestamp: number;
+}
+
+const HISTORY_KEY = "hacktui-search-history";
+const MAX_HISTORY = 10;
+
+function getHistory(): SearchHistoryEntry[] {
+  try {
+    const raw = fileStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+function saveToHistory(query: string, results: SearchHit[]) {
+  const history = getHistory();
+  const existingIndex = history.findIndex((h) => h.query === query);
+  if (existingIndex >= 0) {
+    history.splice(existingIndex, 1);
+  }
+  history.unshift({ query, results, timestamp: Date.now() });
+  const trimmed = history.slice(0, MAX_HISTORY);
+  fileStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+}
+
+function timeAgo(timestamp: number): string {
+  const seconds = Math.floor(Date.now() / 1000 - timestamp);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  if (minutes > 0) return `${minutes}m ago`;
+  return `${seconds}s ago`;
+}
 
 export default function Search() {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selected, setSelected] = useState(0);
+  const scrollboxRef = useRef<any>(null);
 
-  const results = DUMMY_RESULTS.filter((r) =>
-    r.title.toLowerCase().includes(query.toLowerCase()),
-  );
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const {
+    data: searchResults,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["hn-search", debouncedQuery],
+    queryFn: async () => {
+      const res = await searchApi.get("/search", {
+        params: {
+          query: debouncedQuery,
+          tags: "story",
+          hitsPerPage: 20,
+        },
+      });
+      return res.data.hits as SearchHit[];
+    },
+    enabled: debouncedQuery.length > 0,
+  });
+
+  useEffect(() => {
+    if (searchResults && searchResults.length > 0 && debouncedQuery.length > 0) {
+      saveToHistory(debouncedQuery, searchResults);
+    }
+  }, [searchResults, debouncedQuery]);
+
+  useEffect(() => {
+    setSelected(0);
+  }, [debouncedQuery, searchResults]);
+
+  const history = getHistory();
+  const previousResults = history[0]?.results ?? [];
+
+  const showPrevious = debouncedQuery.length === 0;
+  const displayResults = showPrevious
+    ? previousResults
+    : (searchResults ?? []);
+  const isSearching = isLoading && debouncedQuery.length > 0;
+
+  useEffect(() => {
+    if (scrollboxRef.current && displayResults[selected]) {
+      scrollboxRef.current.scrollChildIntoView(
+        `search-${displayResults[selected].objectID}`,
+      );
+    }
+  }, [selected, displayResults]);
 
   useKeyboard((key) => {
     if (key.name === "down") {
-      setSelected((s) => Math.min(s + 1, results.length - 1));
+      setSelected((s) => Math.min(s + 1, displayResults.length - 1));
     }
     if (key.name === "up") {
       setSelected((s) => Math.max(s - 1, 0));
+    }
+    if (key.name === "enter" || key.name === "return") {
+      const item = displayResults[selected];
+      if (item) {
+        openUrl(
+          item.url ?? `https://news.ycombinator.com/item?id=${item.objectID}`,
+        );
+      }
     }
   });
 
@@ -43,8 +141,6 @@ export default function Search() {
     <box
       style={{
         flexDirection: "column",
-        width: "100%",
-        height: "100%",
         paddingX: 2,
         paddingY: 1,
         gap: 1,
@@ -67,26 +163,93 @@ export default function Search() {
         value={query}
         onChange={setQuery}
         focused
-        width="100%"
         backgroundColor="#1a1a2e"
         textColor="#c0caf5"
         cursorColor="#FF653F"
         focusedBackgroundColor="#1a1a2e"
       />
-      <box style={{ flexDirection: "column", flexGrow: 1, gap: 0 }}>
-        {results.map((item, i) => (
-          <box
-            key={i}
-            paddingX={1}
-            paddingY={0}
-            backgroundColor={selected === i ? "#FF653F" : "transparent"}
-          >
-            <text fg={selected === i ? "#ffffff" : "#c0caf5"}>
-              {item.title}
+      <scrollbox ref={scrollboxRef} height={10}>
+        <box style={{ flexDirection: "column", gap: 0 }}>
+          {isSearching && (
+            <box
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                paddingY: 1,
+              }}
+            >
+              <spinner name="dots" color="#FF653F" />
+              <text fg="#666666">Searching...</text>
+            </box>
+          )}
+          {isError && (
+            <box
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingY: 1,
+              }}
+            >
+              <text fg="#FF653F">Search failed. Try again.</text>
+            </box>
+          )}
+          {showPrevious && previousResults.length > 0 && (
+            <text fg="#666666" marginBottom={1}>
+              Previous search: <span fg="#c0caf5">{history[0]!.query}</span>
             </text>
-          </box>
-        ))}
-      </box>
+          )}
+          {displayResults.length === 0 && !isSearching && !isError && (
+            <box
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingY: 1,
+              }}
+            >
+              <text fg="#666666">
+                {showPrevious
+                  ? "Type to search Hacker News"
+                  : "No results found"}
+              </text>
+            </box>
+          )}
+          {displayResults.map((item, i) => (
+            <box
+              key={item.objectID}
+              id={`search-${item.objectID}`}
+              paddingX={1}
+              paddingY={0}
+              backgroundColor={selected === i ? "#FF653F" : "transparent"}
+            >
+              <box style={{ flexDirection: "column", gap: 0 }}>
+                <text fg={selected === i ? "#1a1b26" : "#c0caf5"}>
+                  <strong>{item.title}</strong>
+                </text>
+                <box style={{ flexDirection: "row", gap: 1, marginLeft: 0 }}>
+                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                    {item.points} points
+                  </text>
+                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                    by {item.author}
+                  </text>
+                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                    {timeAgo(item.created_at_i)}
+                  </text>
+                  {item.num_comments != null && (
+                    <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                      | {item.num_comments} comments
+                    </text>
+                  )}
+                </box>
+              </box>
+            </box>
+          ))}
+        </box>
+      </scrollbox>
 
       <box
         style={{
