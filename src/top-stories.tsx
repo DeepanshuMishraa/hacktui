@@ -5,6 +5,7 @@ import type { HNItem } from "./utils/types";
 import { useState, useRef, useEffect } from "react";
 import { useKeyboard } from "@opentui/react";
 import { openUrl } from "./utils/open-url";
+import { useTheme } from "./theme";
 
 function getDomain(url?: string): string {
   if (!url) return "news.ycombinator.com";
@@ -31,6 +32,7 @@ function timeAgo(timestamp: number): string {
 export default function TopStories() {
   const [selected, setSelected] = useState(0);
   const scrollboxRef = useRef<any>(null);
+  const { tokens } = useTheme();
 
   const {
     data: storyIds,
@@ -101,8 +103,8 @@ export default function TopStories() {
           gap: 1,
         }}
       >
-        <spinner name="bouncingBall" color="#FF653F" />
-        <text fg="#666666">Loading best stories...</text>
+        <spinner name="bouncingBall" color={tokens.spinner} />
+        <text fg={tokens.textSecondary}>Loading best stories...</text>
       </box>
     );
   }
@@ -118,10 +120,10 @@ export default function TopStories() {
           gap: 1,
         }}
       >
-        <text fg="#FF653F">
+        <text fg={tokens.error}>
           <strong>Something went wrong!</strong>
         </text>
-        <text fg="#666666">Could not load best stories.</text>
+        <text fg={tokens.textSecondary}>Could not load best stories.</text>
       </box>
     );
   }
@@ -144,11 +146,11 @@ export default function TopStories() {
           marginBottom: 1,
         }}
       >
-        <text fg="#FF653F">
+        <text fg={tokens.accent}>
           <strong>HackTUI</strong>
         </text>
-        <text fg="#666666">|</text>
-        <text fg="#c0caf5">
+        <text fg={tokens.textSecondary}>|</text>
+        <text fg={tokens.textPrimary}>
           <strong>Best Stories</strong>
         </text>
       </box>
@@ -160,12 +162,12 @@ export default function TopStories() {
               id={`story-${story.id}`}
               paddingX={1}
               paddingY={0}
-              backgroundColor={selected === i ? "#FF653F" : "transparent"}
+              backgroundColor={selected === i ? tokens.selectedBg : "transparent"}
             >
               <box style={{ flexDirection: "column", gap: 0 }}>
                 <box style={{ flexDirection: "row", gap: 1 }}>
-                  <text fg="#666666">{i + 1}.</text>
-                  <text fg={selected === i ? "#1a1b26" : "#c0caf5"}>
+                  <text fg={tokens.textSecondary}>{i + 1}.</text>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textPrimary}>
                     <strong>{story.title}</strong>
                   </text>
                 </box>
@@ -176,20 +178,20 @@ export default function TopStories() {
                     marginLeft: 3,
                   }}
                 >
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     {story.score} points
                   </text>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     by {story.by}
                   </text>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     {timeAgo(story.time)}
                   </text>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     | {getDomain(story.url)}
                   </text>
                   {story.descendants != null && (
-                    <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                    <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                       | {story.descendants} comments
                     </text>
                   )}
@@ -207,13 +209,13 @@ export default function TopStories() {
           paddingTop: 1,
         }}
       >
-        <text fg="#666666">
+        <text fg={tokens.textSecondary}>
           <strong>Navigate</strong> ↑↓
         </text>
-        <text fg="#666666">
+        <text fg={tokens.textSecondary}>
           <strong>Open</strong> enter
         </text>
-        <text fg="#666666">
+        <text fg={tokens.textSecondary}>
           <strong>Back</strong> esc
         </text>
       </box>

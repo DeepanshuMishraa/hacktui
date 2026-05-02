@@ -5,6 +5,7 @@ import axios from "axios";
 import "opentui-spinner/react";
 import { openUrl } from "./utils/open-url";
 import { fileStorage } from "./utils/cache";
+import { useTheme } from "./theme";
 
 const searchApi = axios.create({
   baseURL: "https://hn.algolia.com/api/v1",
@@ -69,6 +70,7 @@ export default function Search() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const scrollboxRef = useRef<any>(null);
+  const { tokens } = useTheme();
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(query), 300);
@@ -146,6 +148,9 @@ export default function Search() {
         paddingY: 1,
         gap: 1,
       }}
+      width="100%"
+      height="100%"
+      backgroundColor={tokens.dialogBg}
     >
       <box
         style={{
@@ -157,17 +162,17 @@ export default function Search() {
         <text>
           <strong>Search stories</strong>
         </text>
-        <text fg="#666666">esc</text>
+        <text fg={tokens.textSecondary}>esc</text>
       </box>
       <input
         placeholder="Search"
         value={query}
         onChange={setQuery}
         focused
-        backgroundColor="#1a1a2e"
-        textColor="#c0caf5"
-        cursorColor="#FF653F"
-        focusedBackgroundColor="#1a1a2e"
+        backgroundColor={tokens.inputBg}
+        textColor={tokens.inputText}
+        cursorColor={tokens.cursor}
+        focusedBackgroundColor={tokens.inputBg}
       />
       <scrollbox ref={scrollboxRef} height={10}>
         <box style={{ flexDirection: "column", gap: 0 }}>
@@ -181,8 +186,8 @@ export default function Search() {
                 paddingY: 1,
               }}
             >
-              <spinner name="dots" color="#FF653F" />
-              <text fg="#666666">Searching...</text>
+              <spinner name="dots" color={tokens.spinner} />
+              <text fg={tokens.textSecondary}>Searching...</text>
             </box>
           )}
           {isError && (
@@ -194,11 +199,11 @@ export default function Search() {
                 paddingY: 1,
               }}
             >
-              <text fg="#FF653F">Search failed. Try again.</text>
+              <text fg={tokens.error}>Search failed. Try again.</text>
             </box>
           )}
           {showPrevious && previousResults.length > 0 && (
-            <text fg="#666666" marginBottom={1}>
+            <text fg={tokens.textSecondary} marginBottom={1}>
               <strong>Previous top results</strong>
             </text>
           )}
@@ -211,7 +216,7 @@ export default function Search() {
                 paddingY: 1,
               }}
             >
-              <text fg="#666666">
+              <text fg={tokens.textSecondary}>
                 {showPrevious
                   ? "Type to search Hacker News"
                   : "No results found"}
@@ -224,24 +229,24 @@ export default function Search() {
               id={`search-${item.objectID}`}
               paddingX={1}
               paddingY={0}
-              backgroundColor={selected === i ? "#FF653F" : "transparent"}
+              backgroundColor={selected === i ? tokens.selectedBg : "transparent"}
             >
               <box style={{ flexDirection: "column", gap: 0 }}>
-                <text fg={selected === i ? "#1a1b26" : "#c0caf5"}>
+                <text fg={selected === i ? tokens.textSelected : tokens.textPrimary}>
                   <strong>{item.title}</strong>
                 </text>
                 <box style={{ flexDirection: "row", gap: 1, marginLeft: 0 }}>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     {item.points} points
                   </text>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     by {item.author}
                   </text>
-                  <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                     {timeAgo(item.created_at_i)}
                   </text>
                   {item.num_comments != null && (
-                    <text fg={selected === i ? "#1a1b26" : "#666666"}>
+                    <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
                       | {item.num_comments} comments
                     </text>
                   )}
@@ -259,11 +264,11 @@ export default function Search() {
           marginTop: 1,
         }}
       >
-        <text>
-          <strong>Open</strong> <span fg="#666666">o</span>
+        <text fg={tokens.textPrimary}>
+          <strong>Open</strong> <span fg={tokens.textSecondary}>o</span>
         </text>
-        <text>
-          <strong>Navigate</strong> <span fg="#666666">↑↓</span>
+        <text fg={tokens.textPrimary}>
+          <strong>Navigate</strong> <span fg={tokens.textSecondary}>↑↓</span>
         </text>
       </box>
     </box>

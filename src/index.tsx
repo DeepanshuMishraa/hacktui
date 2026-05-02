@@ -6,22 +6,33 @@ import { Screens } from "./utils/types";
 import TopStories from "./top-stories";
 import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
+import { useTheme } from "./theme";
+import { exit } from "process";
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
   const dialog = useDialog();
   const isOpen = useDialogState((s) => s.isOpen);
+  const { tokens, toggle } = useTheme();
 
   useKeyboard((key) => {
-    if (
-      isOpen &&
-      (key.name === "f" || key.name === "t" || key.name === "s")
-    ) {
+    if (key.ctrl) {
+      if (key.name === "t") {
+        toggle();
+      }
+      return;
+    }
+
+    if (isOpen && (key.name === "f" || key.name === "t" || key.name === "s")) {
       return;
     }
 
     if (key.name === "f") {
       setScreen(Screens.FEED);
+    }
+
+    if (key.name === "q") {
+      exit(0);
     }
     if (key.name === "t") {
       setScreen(Screens.TOP_STORIES);
@@ -56,28 +67,36 @@ export default function App() {
         gap: 0.5,
       }}
     >
-      <ascii-font font="tiny" text="HackTUI" color="#FF653F" marginTop={1.5} />
-      <text fg="#666666" marginTop={1}>
+      <ascii-font
+        font="tiny"
+        text="HackTUI"
+        color={tokens.accent}
+        marginTop={1.5}
+      />
+      <text fg={tokens.textSecondary} marginTop={1}>
         Your HackerNews Inside the Terminal
       </text>
       <box style={{ flexDirection: "row", gap: 1 }}>
-        <box paddingX={1} backgroundColor="#FF653F">
+        <box paddingX={1} backgroundColor={tokens.accent}>
           <text>
             <strong>F (Feed)</strong>
           </text>
         </box>
 
-        <box paddingX={1} backgroundColor="#FF653F">
+        <box paddingX={1} backgroundColor={tokens.accent}>
           <text>
             <strong>S (Search)</strong>
           </text>
         </box>
 
-        <box paddingX={1} backgroundColor="#FF653F">
+        <box paddingX={1} backgroundColor={tokens.accent}>
           <text>
             <strong>T (Top Stories)</strong>
           </text>
         </box>
+      </box>
+      <box marginTop={1}>
+        <text fg={tokens.textSecondary}>Toggle theme: ctrl + t</text>
       </box>
     </box>
   );
