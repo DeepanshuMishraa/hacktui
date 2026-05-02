@@ -112,7 +112,7 @@ export default function TopStories() {
     return (
       <box
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "90%",
@@ -120,7 +120,6 @@ export default function TopStories() {
         }}
       >
         <spinner name="bouncingBall" color={tokens.spinner} />
-        <text fg={tokens.textSecondary}>Loading best stories...</text>
       </box>
     );
   }

@@ -97,7 +97,9 @@ export default function Feed() {
     if (key.name === "enter" || key.name === "return") {
       if (stories[selected]) {
         const story = stories[selected];
-        openUrl(story.url ?? `https://news.ycombinator.com/item?id=${story.id}`);
+        openUrl(
+          story.url ?? `https://news.ycombinator.com/item?id=${story.id}`,
+        );
       }
     }
   });
@@ -112,7 +114,7 @@ export default function Feed() {
     return (
       <box
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "90%",
@@ -120,7 +122,6 @@ export default function Feed() {
         }}
       >
         <spinner name="dots" color={tokens.spinner} />
-        <text fg={tokens.textSecondary}>Loading stories...</text>
       </box>
     );
   }
@@ -178,12 +179,20 @@ export default function Feed() {
               id={`story-${story.id}`}
               paddingX={1}
               paddingY={0}
-              backgroundColor={selected === i ? tokens.selectedBg : "transparent"}
+              backgroundColor={
+                selected === i ? tokens.selectedBg : "transparent"
+              }
             >
               <box style={{ flexDirection: "column", gap: 0 }}>
                 <box style={{ flexDirection: "row", gap: 1 }}>
-                  <text fg={tokens.textSecondary}>{(page - 1) * 30 + i + 1}.</text>
-                  <text fg={selected === i ? tokens.textSelected : tokens.textPrimary}>
+                  <text fg={tokens.textSecondary}>
+                    {(page - 1) * 30 + i + 1}.
+                  </text>
+                  <text
+                    fg={
+                      selected === i ? tokens.textSelected : tokens.textPrimary
+                    }
+                  >
                     <strong>{story.title}</strong>
                   </text>
                 </box>
@@ -194,20 +203,50 @@ export default function Feed() {
                     marginLeft: 3,
                   }}
                 >
-                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
+                  <text
+                    fg={
+                      selected === i
+                        ? tokens.textSelected
+                        : tokens.textSecondary
+                    }
+                  >
                     {story.score} points
                   </text>
-                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
+                  <text
+                    fg={
+                      selected === i
+                        ? tokens.textSelected
+                        : tokens.textSecondary
+                    }
+                  >
                     by {story.by}
                   </text>
-                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
+                  <text
+                    fg={
+                      selected === i
+                        ? tokens.textSelected
+                        : tokens.textSecondary
+                    }
+                  >
                     {timeAgo(story.time)}
                   </text>
-                  <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
+                  <text
+                    fg={
+                      selected === i
+                        ? tokens.textSelected
+                        : tokens.textSecondary
+                    }
+                  >
                     | {getDomain(story.url)}
                   </text>
                   {story.descendants != null && (
-                    <text fg={selected === i ? tokens.textSelected : tokens.textSecondary}>
+                    <text
+                      fg={
+                        selected === i
+                          ? tokens.textSelected
+                          : tokens.textSecondary
+                      }
+                    >
                       | {story.descendants} comments
                     </text>
                   )}
