@@ -4,14 +4,22 @@ import Feed from "./feed";
 import "opentui-spinner/react";
 import { Screens } from "./utils/types";
 import TopStories from "./top-stories";
-import { useDialog } from "@opentui-ui/dialog/react";
+import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
 
 export default function App() {
   const [screen, setScreen] = useState<Screens>(Screens.HOME);
   const dialog = useDialog();
+  const isOpen = useDialogState((s) => s.isOpen);
 
   useKeyboard((key) => {
+    if (
+      isOpen &&
+      (key.name === "f" || key.name === "t" || key.name === "s")
+    ) {
+      return;
+    }
+
     if (key.name === "f") {
       setScreen(Screens.FEED);
     }
