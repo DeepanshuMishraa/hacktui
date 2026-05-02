@@ -23,11 +23,11 @@ interface SearchHit {
 
 interface SearchHistoryEntry {
   query: string;
-  results: SearchHit[];
+  topResult: SearchHit;
   timestamp: number;
 }
 
-const HISTORY_KEY = "hacktui-search-history";
+const HISTORY_KEY = "hacktui-search-history-v2";
 const MAX_HISTORY = 10;
 
 function getHistory(): SearchHistoryEntry[] {
@@ -41,12 +41,13 @@ function getHistory(): SearchHistoryEntry[] {
 }
 
 function saveToHistory(query: string, results: SearchHit[]) {
+  if (!results.length) return;
   const history = getHistory();
   const existingIndex = history.findIndex((h) => h.query === query);
   if (existingIndex >= 0) {
     history.splice(existingIndex, 1);
   }
-  history.unshift({ query, results, timestamp: Date.now() });
+  history.unshift({ query, topResult: results[0]!, timestamp: Date.now() });
   const trimmed = history.slice(0, MAX_HISTORY);
   fileStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
 }
@@ -104,7 +105,7 @@ export default function Search() {
   }, [debouncedQuery, searchResults]);
 
   const history = getHistory();
-  const previousResults = history[0]?.results ?? [];
+  const previousResults = history.map((h) => h.topResult);
 
   const showPrevious = debouncedQuery.length === 0;
   const displayResults = showPrevious
@@ -127,7 +128,7 @@ export default function Search() {
     if (key.name === "up") {
       setSelected((s) => Math.max(s - 1, 0));
     }
-    if (key.name === "enter" || key.name === "return") {
+    if (key.name === "o") {
       const item = displayResults[selected];
       if (item) {
         openUrl(
@@ -198,7 +199,7 @@ export default function Search() {
           )}
           {showPrevious && previousResults.length > 0 && (
             <text fg="#666666" marginBottom={1}>
-              Previous search: <span fg="#c0caf5">{history[0]!.query}</span>
+              <strong>Previous top results</strong>
             </text>
           )}
           {displayResults.length === 0 && !isSearching && !isError && (
@@ -259,7 +260,7 @@ export default function Search() {
         }}
       >
         <text>
-          <strong>Open</strong> <span fg="#666666">enter</span>
+          <strong>Open</strong> <span fg="#666666">o</span>
         </text>
         <text>
           <strong>Navigate</strong> <span fg="#666666">↑↓</span>
