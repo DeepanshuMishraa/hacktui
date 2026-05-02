@@ -1,0 +1,25 @@
+src/feed.tsx
+  e5d9c466fa54ef15 4-29,31-57,59-60,62-121,126-129,132-212
+src/utils/types.ts
+  e5d9c466fa54ef15 7-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "0162f9b43c91a2239ff9e95c478209fb1f32afa9",
+  "prompts": {
+    "e5d9c466fa54ef15": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_2175fa3b0ffeabK2AKRBwb7WdT",
+        "model": "opencode-go/deepseek-v4-flash"
+      },
+      "human_author": "Deepanshu Mishra",
+      "messages": [],
+      "total_additions": 187,
+      "total_deletions": 18,
+      "accepted_lines": 175,
+      "overriden_lines": 2
+    }
+  }
+}
