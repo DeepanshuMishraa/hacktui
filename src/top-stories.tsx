@@ -31,27 +31,30 @@ function timeAgo(timestamp: number): string {
 
 export default function TopStories() {
   const [selected, setSelected] = useState(0);
+  const [page, setPage] = useState(1);
   const scrollboxRef = useRef<any>(null);
   const { tokens } = useTheme();
 
   const {
-    data: storyIds,
+    data: allStoryIds,
     isLoading: idsLoading,
     isError: idsError,
   } = useQuery({
     queryKey: ["best-ids"],
     queryFn: async () => {
       const res = await api.get<number[]>("/v0/beststories.json");
-      return res.data.slice(0, 30);
+      return res.data;
     },
   });
+
+  const storyIds = allStoryIds?.slice((page - 1) * 30, page * 30);
 
   const {
     data: stories,
     isLoading: storiesLoading,
     isError: storiesError,
   } = useQuery({
-    queryKey: ["best-stories", storyIds],
+    queryKey: ["best-stories", page, storyIds],
     queryFn: async () => {
       if (!storyIds) return [];
       const results = await Promise.all(
@@ -69,6 +72,7 @@ export default function TopStories() {
 
   const isLoading = idsLoading || storiesLoading;
   const isError = idsError || storiesError;
+  const totalPages = allStoryIds ? Math.ceil(allStoryIds.length / 30) : 1;
 
   useKeyboard((key) => {
     if (!stories) return;
@@ -77,6 +81,18 @@ export default function TopStories() {
     }
     if (key.name === "up") {
       setSelected((s) => Math.max(s - 1, 0));
+    }
+    if (key.name === "left") {
+      if (page > 1) {
+        setPage((p) => p - 1);
+        setSelected(0);
+      }
+    }
+    if (key.name === "right") {
+      if (page < totalPages) {
+        setPage((p) => p + 1);
+        setSelected(0);
+      }
     }
     if (key.name === "enter" || key.name === "return") {
       if (stories[selected]) {
@@ -166,7 +182,7 @@ export default function TopStories() {
             >
               <box style={{ flexDirection: "column", gap: 0 }}>
                 <box style={{ flexDirection: "row", gap: 1 }}>
-                  <text fg={tokens.textSecondary}>{i + 1}.</text>
+                  <text fg={tokens.textSecondary}>{(page - 1) * 30 + i + 1}.</text>
                   <text fg={selected === i ? tokens.textSelected : tokens.textPrimary}>
                     <strong>{story.title}</strong>
                   </text>
@@ -211,6 +227,9 @@ export default function TopStories() {
       >
         <text fg={tokens.textSecondary}>
           <strong>Navigate</strong> ↑↓
+        </text>
+        <text fg={tokens.textSecondary}>
+          <strong>Paginate</strong> ← → ({page}/{totalPages})
         </text>
         <text fg={tokens.textSecondary}>
           <strong>Open</strong> enter
