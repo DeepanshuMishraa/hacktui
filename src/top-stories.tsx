@@ -4,6 +4,7 @@ import { api } from "./utils/api";
 import type { HNItem } from "./utils/types";
 import { useState, useRef, useEffect } from "react";
 import { useKeyboard } from "@opentui/react";
+import { openUrl } from "./utils/open-url";
 
 function getDomain(url?: string): string {
   if (!url) return "news.ycombinator.com";
@@ -74,6 +75,12 @@ export default function TopStories() {
     }
     if (key.name === "up") {
       setSelected((s) => Math.max(s - 1, 0));
+    }
+    if (key.name === "enter" || key.name === "return") {
+      if (stories[selected]) {
+        const story = stories[selected];
+        openUrl(story.url ?? `https://news.ycombinator.com/item?id=${story.id}`);
+      }
     }
   });
 
