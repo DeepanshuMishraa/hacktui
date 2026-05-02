@@ -1,0 +1,23 @@
+src/search.tsx
+  95a465f55128e3d5 26,30,44,50,108,131,202,263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "14d5005689f03ef178c165d842ab62cc66f55a68",
+  "prompts": {
+    "95a465f55128e3d5": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_217262daeffe5AybfZYMbqN40f",
+        "model": "opencode-go/kimi-k2.6"
+      },
+      "human_author": "Deepanshu Mishra",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 7,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    }
+  }
+}
