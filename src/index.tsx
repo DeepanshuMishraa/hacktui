@@ -2,7 +2,7 @@ import { useKeyboard } from "@opentui/react";
 import { useState } from "react";
 import Feed from "./feed";
 import "opentui-spinner/react";
-import { Screens } from "./types";
+import { Screens } from "./utils/types";
 import TopStories from "./top-stories";
 import { useDialog } from "@opentui-ui/dialog/react";
 import Search from "./search";
