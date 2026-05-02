@@ -114,7 +114,7 @@ export default function Feed() {
     return (
       <box
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "90%",

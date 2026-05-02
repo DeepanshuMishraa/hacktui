@@ -112,7 +112,7 @@ export default function TopStories() {
     return (
       <box
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "90%",

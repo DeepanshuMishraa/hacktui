@@ -1,10 +1,34 @@
 {
   "name": "hacktui",
-  "module": "src/index.tsx",
+  "version": "1.0.0",
+  "description": "A beautiful HackerNews TUI for your terminal",
   "type": "module",
-  "private": true,
+  "module": "src/index.tsx",
+  "bin": {
+    "hacktui": "dist/layout.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "dev": "bun run --watch src/layout.tsx"
+    "dev": "bun run --watch src/layout.tsx",
+    "build": "rm -rf dist && bun build src/layout.tsx --outdir dist --target=bun",
+    "postbuild": "echo '#!/usr/bin/env bun' | cat - dist/layout.js > dist/layout.tmp.js && mv dist/layout.tmp.js dist/layout.js && chmod +x dist/layout.js",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "hackernews",
+    "hn",
+    "tui",
+    "terminal",
+    "cli",
+    "news",
+    "opentui"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
   },
   "devDependencies": {
     "@types/bun": "latest"
