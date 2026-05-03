@@ -1,6 +1,6 @@
 {
 	"name": "hacktui",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A beautiful HackerNews TUI for your terminal",
 	"type": "module",
 	"module": "src/index.tsx",
