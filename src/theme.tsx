@@ -30,17 +30,17 @@ export interface ThemeTokens {
 }
 
 const darkTokens: ThemeTokens = {
-  textPrimary: "#c0caf5",
-  textSecondary: "#666666",
-  textSelected: "#1a1b26",
+  textPrimary: "#ffffff",
+  textSecondary: "#888888",
+  textSelected: "#000000",
   accent: "#FF653F",
   selectedBg: "#FF653F",
-  inputBg: "#1a1a2e",
-  inputText: "#c0caf5",
+  inputBg: "#111111",
+  inputText: "#ffffff",
   cursor: "#FF653F",
   spinner: "#FF653F",
   error: "#FF653F",
-  dialogBg: "#262626",
+  dialogBg: "#0a0a0a",
 };
 
 const lightTokens: ThemeTokens = {
@@ -87,7 +87,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!renderer) return;
-    renderer.setBackgroundColor(mode === "dark" ? "#1a1a2e" : "#ffffff");
+    renderer.setBackgroundColor(mode === "dark" ? "#000000" : "#ffffff");
   }, [mode, renderer]);
 
   const tokens = mode === "dark" ? darkTokens : lightTokens;

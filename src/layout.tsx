@@ -6,7 +6,7 @@ import { DialogProvider, themes } from "@opentui-ui/dialog/react";
 import { ThemeProvider, useTheme } from "./theme";
 
 const ThemedDialogProvider = ({ children }: { children: React.ReactNode }) => {
-  const { mode } = useTheme();
+  const { tokens } = useTheme();
 
   return (
     <DialogProvider
@@ -14,7 +14,7 @@ const ThemedDialogProvider = ({ children }: { children: React.ReactNode }) => {
       {...themes.minimal}
       dialogOptions={{
         style: {
-          backgroundColor: mode === "dark" ? "#262626" : "#ffffff",
+          backgroundColor: tokens.dialogBg,
           border: false,
           padding: 1,
         },
