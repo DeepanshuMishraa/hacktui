@@ -1,50 +1,50 @@
 {
-  "name": "hacktui",
-  "version": "1.0.0",
-  "description": "A beautiful HackerNews TUI for your terminal",
-  "type": "module",
-  "module": "src/index.tsx",
-  "bin": {
-    "hacktui": "dist/layout.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "dev": "bun run --watch src/layout.tsx",
-    "build": "rm -rf dist && bun build src/layout.tsx --outdir dist --target=bun",
-    "postbuild": "echo '#!/usr/bin/env bun' | cat - dist/layout.js > dist/layout.tmp.js && mv dist/layout.tmp.js dist/layout.js && chmod +x dist/layout.js",
-    "prepublishOnly": "bun run build"
-  },
-  "keywords": [
-    "hackernews",
-    "hn",
-    "tui",
-    "terminal",
-    "cli",
-    "news",
-    "opentui"
-  ],
-  "author": "",
-  "license": "MIT",
-  "engines": {
-    "bun": ">=1.0.0"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@opentui-ui/dialog": "^0.1.2",
-    "@opentui/core": "^0.1.103",
-    "@opentui/react": "^0.1.103",
-    "@tanstack/query-sync-storage-persister": "^5.100.8",
-    "@tanstack/react-query": "^5.100.8",
-    "@tanstack/react-query-persist-client": "^5.100.8",
-    "axios": "^1.15.2",
-    "opentui-spinner": "^0.0.6",
-    "react": "^19.2.4"
-  }
+	"name": "hacktui",
+	"version": "1.0.1",
+	"description": "A beautiful HackerNews TUI for your terminal",
+	"type": "module",
+	"module": "src/index.tsx",
+	"bin": {
+		"hacktui": "dist/layout.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev": "bun run --watch src/layout.tsx",
+		"build": "rm -rf dist && bun build src/layout.tsx --outdir dist --target=bun",
+		"postbuild": "echo '#!/usr/bin/env bun' | cat - dist/layout.js > dist/layout.tmp.js && mv dist/layout.tmp.js dist/layout.js && chmod +x dist/layout.js",
+		"prepublishOnly": "bun run build"
+	},
+	"keywords": [
+		"hackernews",
+		"hn",
+		"tui",
+		"terminal",
+		"cli",
+		"news",
+		"opentui"
+	],
+	"author": "",
+	"license": "MIT",
+	"engines": {
+		"bun": ">=1.0.0"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@opentui-ui/dialog": "0.1.2",
+		"@opentui/core": "0.1.103",
+		"@opentui/react": "0.1.103",
+		"@tanstack/query-sync-storage-persister": "5.100.8",
+		"@tanstack/react-query": "5.100.8",
+		"@tanstack/react-query-persist-client": "5.100.8",
+		"axios": "1.15.2",
+		"opentui-spinner": "0.0.6",
+		"react": "19.2.4"
+	}
 }
