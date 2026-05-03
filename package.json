@@ -3,17 +3,16 @@
 	"version": "1.0.1",
 	"description": "A beautiful HackerNews TUI for your terminal",
 	"type": "module",
-	"module": "src/index.tsx",
 	"bin": {
-		"hacktui": "dist/layout.js"
+		"hacktui": "bin/hacktui.js"
 	},
 	"files": [
+		"bin",
 		"dist"
 	],
 	"scripts": {
 		"dev": "bun run --watch src/layout.tsx",
-		"build": "rm -rf dist && bun build src/layout.tsx --outdir dist --target=bun",
-		"postbuild": "echo '#!/usr/bin/env bun' | cat - dist/layout.js > dist/layout.tmp.js && mv dist/layout.tmp.js dist/layout.js && chmod +x dist/layout.js",
+		"build": "rm -rf dist && bun run scripts/build.ts",
 		"prepublishOnly": "bun run build"
 	},
 	"keywords": [
