@@ -1,0 +1,23 @@
+package.json
+  25c93810102faca9 40-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "405e6575ed81b2d7600d2de46b1c9ce0b43eb579",
+  "prompts": {
+    "25c93810102faca9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_212df1177ffeQgnIXdKFltRsyF",
+        "model": "opencode-go/kimi-k2.6"
+      },
+      "human_author": "Deepanshu Mishra",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 9,
+      "accepted_lines": 9,
+      "overriden_lines": 0
+    }
+  }
+}
