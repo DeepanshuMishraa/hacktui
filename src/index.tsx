@@ -8,6 +8,7 @@ import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
 import { useTheme } from "./theme";
 import { renderer } from "./layout";
+import { openUrl } from "./utils/open-url";
 
 function MenuItem({
   keyLabel,
@@ -69,6 +70,10 @@ export default function App() {
         id: "search-dialog",
       });
     }
+    
+    if (key.name === "g") {
+      openUrl("https://github.com/DeepanshuMishraa/hacktui/issues");
+    }
   });
 
   if (screen === Screens.FEED) {
@@ -103,12 +108,11 @@ export default function App() {
         <MenuItem keyLabel="f" label="feed" tokens={tokens} />
         <MenuItem keyLabel="t" label="top stories" tokens={tokens} />
         <MenuItem keyLabel="s" label="search" tokens={tokens} />
+        <MenuItem keyLabel="g" label="report an issue" tokens={tokens} />
       </box>
 
       <box style={{ flexDirection: "column", gap: 0, alignItems: "center" }}>
-        <text fg={tokens.textSecondary}>
-          ctrl+t theme · q quit
-        </text>
+        <text fg={tokens.textSecondary}>ctrl+t theme · q quit</text>
       </box>
     </box>
   );
