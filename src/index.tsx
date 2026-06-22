@@ -6,7 +6,9 @@ import { Screens } from "./utils/types";
 import TopStories from "./top-stories";
 import { useDialog, useDialogState } from "@opentui-ui/dialog/react";
 import Search from "./search";
+import ThemeSelector from "./theme-selector";
 import { useTheme } from "./theme";
+import { themes } from "./themes";
 import { renderer } from "./layout";
 import { openUrl } from "./utils/open-url";
 
@@ -34,18 +36,22 @@ export default function App() {
   const [detailOpen, setDetailOpen] = useState(false);
   const dialog = useDialog();
   const isOpen = useDialogState((s) => s.isOpen);
-  const { tokens, toggle } = useTheme();
+  const { tokens, themeName } = useTheme();
 
   useKeyboard((key) => {
     if (detailOpen) return;
-    if (key.ctrl) {
-      if (key.name === "t") {
-        toggle();
-      }
+
+    if (isOpen && (key.name === "f" || key.name === "t" || key.name === "s")) {
       return;
     }
 
-    if (isOpen && (key.name === "f" || key.name === "t" || key.name === "s")) {
+    if (key.shift && key.name === "t") {
+      dialog.show({
+        content: () => <ThemeSelector onClose={() => dialog.close()} />,
+        onClose: () => {},
+        closeOnEscape: true,
+        id: "theme-selector",
+      });
       return;
     }
 
@@ -112,7 +118,11 @@ export default function App() {
       </box>
 
       <box style={{ flexDirection: "column", gap: 0, alignItems: "center" }}>
-        <text fg={tokens.textSecondary}>ctrl+t theme · q quit</text>
+        <text fg={tokens.textSecondary}>T themes · q quit</text>
+      </box>
+      <box style={{ flexDirection: "row", gap: 1, alignItems: "center", marginTop: 1 }}>
+        <text fg={tokens.textSecondary}>theme: </text>
+        <text fg={tokens.accent}>{themes.find((t) => t.name === themeName)?.label ?? themeName}</text>
       </box>
     </box>
   );

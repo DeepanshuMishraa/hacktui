@@ -1,66 +1,31 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { useRenderer } from "@opentui/react";
 import { fileStorage } from "./utils/cache";
-
-export type ThemeMode = "dark" | "light";
+import { themes, type ThemeTokens } from "./themes";
 
 const THEME_KEY = "hacktui-theme";
 
-function loadMode(): ThemeMode {
-  const saved = fileStorage.getItem(THEME_KEY);
-  return saved === "light" ? "light" : "dark";
+function loadThemeName(): string {
+  const cliTheme = typeof process !== "undefined" ? process.env.HACKTUI_THEME : undefined;
+  if (cliTheme) {
+    fileStorage.setItem(THEME_KEY, cliTheme);
+    return cliTheme;
+  }
+  return fileStorage.getItem(THEME_KEY) || "default";
 }
 
-function saveMode(mode: ThemeMode) {
-  fileStorage.setItem(THEME_KEY, mode);
+function saveThemeName(name: string) {
+  fileStorage.setItem(THEME_KEY, name);
 }
 
-export interface ThemeTokens {
-  textPrimary: string;
-  textSecondary: string;
-  textSelected: string;
-  accent: string;
-  selectedBg: string;
-  inputBg: string;
-  inputText: string;
-  cursor: string;
-  spinner: string;
-  error: string;
-  dialogBg: string;
-}
-
-const darkTokens: ThemeTokens = {
-  textPrimary: "#ffffff",
-  textSecondary: "#888888",
-  textSelected: "#000000",
-  accent: "#FF653F",
-  selectedBg: "#FF653F",
-  inputBg: "#111111",
-  inputText: "#ffffff",
-  cursor: "#FF653F",
-  spinner: "#FF653F",
-  error: "#FF653F",
-  dialogBg: "#0a0a0a",
-};
-
-const lightTokens: ThemeTokens = {
-  textPrimary: "#1a1a2e",
-  textSecondary: "#666666",
-  textSelected: "#ffffff",
-  accent: "#FF653F",
-  selectedBg: "#FF653F",
-  inputBg: "#f0f0f5",
-  inputText: "#1a1a2e",
-  cursor: "#FF653F",
-  spinner: "#FF653F",
-  error: "#FF653F",
-  dialogBg: "#ffffff",
-};
+export type { ThemeTokens };
 
 interface ThemeContextValue {
-  mode: ThemeMode;
   tokens: ThemeTokens;
-  toggle: () => void;
+  themeName: string;
+  setTheme: (name: string) => void;
+  cycleTheme: (direction?: 1 | -1) => void;
+  availableThemes: { name: string; label: string }[];
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -74,26 +39,46 @@ export function useTheme(): ThemeContextValue {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<ThemeMode>(loadMode);
+  const [themeName, setThemeName] = useState<string>(loadThemeName);
   const renderer = useRenderer();
 
-  const toggle = useCallback(() => {
-    setMode((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
-      saveMode(next);
-      return next;
-    });
-  }, []);
+  const currentTheme = themes.find((t) => t.name === themeName) ?? themes[0]!;
 
   useEffect(() => {
     if (!renderer) return;
-    renderer.setBackgroundColor(mode === "dark" ? "#000000" : "#ffffff");
-  }, [mode, renderer]);
+    renderer.setBackgroundColor(currentTheme.tokens.background);
+  }, [renderer, currentTheme.tokens.background]);
 
-  const tokens = mode === "dark" ? darkTokens : lightTokens;
+  const setTheme = useCallback((name: string) => {
+    setThemeName(name);
+    saveThemeName(name);
+  }, []);
+
+  const cycleTheme = useCallback((direction: 1 | -1 = 1) => {
+    setThemeName((prev) => {
+      const idx = themes.findIndex((t) => t.name === prev);
+      const next = (idx + direction + themes.length) % themes.length;
+      const name = themes[next]!.name;
+      saveThemeName(name);
+      return name;
+    });
+  }, []);
+
+  const availableThemes = themes.map((t) => ({
+    name: t.name,
+    label: t.label,
+  }));
 
   return (
-    <ThemeContext.Provider value={{ mode, tokens, toggle }}>
+    <ThemeContext.Provider
+      value={{
+        tokens: currentTheme.tokens,
+        themeName,
+        setTheme,
+        cycleTheme,
+        availableThemes,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
