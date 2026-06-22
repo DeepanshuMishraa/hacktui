@@ -1,0 +1,40 @@
+src/theme-selector.tsx
+  s_98a64b87cae3de::t_0ec6efec224dc9 1-4,11-56,58-67,69-71,73-81
+  s_98a64b87cae3de::t_181548dd3792fb 5-10,57,68,72
+src/themes.ts
+  s_98a64b87cae3de::t_f2944cf6ddbbcf 1,19,26,44,62,80,98,116,134,152,170,188,206,224,242,260,278,296,314,332,350,368,386,404,422,440,458,476
+  s_98a64b87cae3de::t_5de56e62edbaf7 2-18,20-25,27-43,45-61,63-79,81-97,99-115,117-133,135-151,153-169,171-187,189-205,207-223,225-241,243-259,261-277,279-295,297-313,315-331,333-349,351-367,369-385,387-403,405-421,423-439,441-457,459-475,477-491
+src/index.tsx
+  s_98a64b87cae3de::t_847a7d3c8e9feb 48
+  s_98a64b87cae3de::t_2c2f37b0b7720f 11
+  s_98a64b87cae3de::t_a132312ef132d0 50
+  s_98a64b87cae3de::t_b254c1e8890c2b 122-125
+  s_98a64b87cae3de::t_6452075abcb61c 121
+  s_98a64b87cae3de::t_e326ebe3891564 49,51-54
+  s_98a64b87cae3de::t_a9d8c6d8b4eb93 9
+  s_98a64b87cae3de::t_19c9f2d6a4711d 39
+src/theme.tsx
+  s_98a64b87cae3de::t_7571517746f78e 45
+  s_98a64b87cae3de::t_5a487ae00ddff3 8,17,25-28,42,51-60,62-65,67-70,73-74,76-81
+  s_98a64b87cae3de::t_a3ad987a8390c7 9-13
+  s_98a64b87cae3de::t_35d6068d2e4bf4 61
+  s_98a64b87cae3de::t_e52c0f00315f96 4,14,18,21,49-50,75
+bin/hacktui.js
+  s_98a64b87cae3de::t_ffe619110de4be 3-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "145c6ab1c22cde2ada3216bdf5b165ecf3350b37",
+  "prompts": {},
+  "sessions": {
+    "s_98a64b87cae3de": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_10e92382cffe9g5QJKz7bXC4AD",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Deepanshu Mishra <d4deepanshu723@gmail.com>"
+    }
+  }
+}
