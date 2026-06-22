@@ -1,0 +1,19 @@
+package.json
+  s_98a64b87cae3de::t_9089cf9c499fe9 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "335410e4a67611311ccc6a2396a1996d0735af52",
+  "prompts": {},
+  "sessions": {
+    "s_98a64b87cae3de": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_10e92382cffe9g5QJKz7bXC4AD",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Deepanshu Mishra <d4deepanshu723@gmail.com>"
+    }
+  }
+}
